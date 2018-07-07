@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>神经网络翻译</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'translate/css/style.css' %}">
+    <script src="{% static 'translate/js/data.js' %}"></script>
+    <script src="{% static 'translate/js/style.js' %}"></script>
+    <link rel="icon" href="{% static 'translate/image/icon.png' %}"/>
+</head>
+<body>
+    {% csrf_token %}
+    <div class="main">
+        <h1 class="text-center">神经机器翻译</h1>
+        <br/>
+        <div style="height:100px;width:370px;margin: 0 auto">
+            <input type="text" class="form-control text-center" placeholder="输入IP，默认IP为：127.0.0.1" style="height:50px;width:250px;margin-right: 20px;" id="ip">
+            <script>
+                $('#ip').on('keydown', function() {
+                    var ip=$("#ip").val();
+                    if(ip.length!=0){
+                        $("#ip_btn").attr('disabled',false);
+                    }
+                    else if(ip.length==0){
+                        $("#ip_btn").attr('disabled',true);
+                    }
+                });
+                $("#ip").keyup(function(){
+                    var ip=$(this);
+                    if(/[^\d]/.test(ip.val())){//替换非数字字符  
+                        var temp_amount=ip.val().replace(/[^\d.]/g,'');
+                        var temp_amount1=ip.val().replace(/[\u0391-\uFFE5]/g,'');
+                        $(this).val(temp_amount,temp_amount1);
+                        
+                    }  
+                })
+                $(document).ready(function(){
+                    $("#ip_btn").click(function(){
+                        var ip=$("#ip").val();
+                        if(ip.length<7 ||ip.length>15){
+                            alert("请输入正确的IP地址")
+                            $("#ip").val('');
+                        }
+                        else{
+                            alert("请务必确定IP正确！")
+                        }
+                    })
+                });
+            </script>
+            <button type="button" class="btn btn-success"style="height:50px;" id="ip_btn" disabled>连接服务器</button>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <select class="form-control" id="src">
+                    <option value="en">英语</option>
+                    <option value="de">德语</option>
+                </select>
+                <img src="{% static 'translate/image/change.svg' %}">
+                <select class="form-control" id="tgt">
+                    <option value="de">德语</option>
+                    <option value="en">英语</option>
+                </select>
+                <button type="button" class="btn btn-primary" id="btn" disabled>翻&nbsp;&nbsp;译</button>
+                <button type="button" class="btn btn-primary" id="reset" disabled>清&nbsp;&nbsp;空</button>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-xs-6">
+                <textarea class="input" id="input" value=""></textarea>
+            </div>
+            <div class="col-xs-6">
+                <textarea class="output" id="output" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
